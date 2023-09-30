@@ -8,5 +8,5 @@ any  [web browser](https://en.wikipedia.org/wiki/Web_browser).  The 2d represent
 slices so that the align with the cordinates axes and have matching sizes using 
 **createSlices.pl**.
 
-These slices can then be loaded into (FreeCad)[https://www.freecad.org/] to 
+These slices can then be loaded into [FreeCad](https://www.freecad.org/) to 
 position them to construct the 3d representation of the dog.    
