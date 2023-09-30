@@ -55,7 +55,11 @@ jobs:
       with:
         ref: 'main'
 
-    - name: Array
+    - name: Cpan
+      run: |
+        sudo cpan install -T Data::Dump Data::Table::Text Math::Vectors2
+
+    - name: Dog
       run: |
         perl createSlices.pl
 END
