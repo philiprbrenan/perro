@@ -93,7 +93,7 @@ sub toSvg($;$)                                                                  
       my $C = addPoint($cx, $cy, $thick);
       my $A = addPoint($ax, $ay, $thick);
       my $B = addPoint($bx, $by, $thick);
-      push @triangles, [$a, $b, $c],  [$A, $B, $C], [$a, $b, $A], [$b, $B, $A]; # Triangulate the slice
+      push @triangles, [$c, $b, $a],  [$A, $B, $C], [$a, $b, $A], [$b, $B, $A]; # Triangulate the slice
      }                
     
     while(@z >= 2)                                                              # Trailing pairs to be drawn individualy
@@ -110,7 +110,7 @@ sub toSvg($;$)                                                                  
       my $C = addPoint($cx, $cy, $thick);
       my $A = addPoint($ax, $ay, $thick);
       my $B = addPoint($bx, $by, $thick);
-      push @triangles, [$a, $b, $c],  [$A, $B, $C], [$a, $b, $A], [$A, $B, $b]; # Triangulate the slice
+      push @triangles, [$c, $b, $a],  [$A, $B, $C], [$a, $b, $A], [$b, $B, $A]; # Triangulate the slice
 	 }
     @s
    }
@@ -247,12 +247,12 @@ END
   }
   
   if ($file =~ m(\Aback\Z))
-   {push @s, tri($points[0][0], $points[0][1],  27,  41, 1, 27);
+   {push @s, tri($points[0][0], $points[0][1],  27,  41, 27, 1);
     
-    my $c = &Math::Vectors2::new($points[22]->@*);
+    my $c = &Math::Vectors2::new($points[26]->@*);
     my $a = &Math::Vectors2::new($points[ 2]->@*);
     my $b = &Math::Vectors2::new($points[ 3]->@*);
-    my $C = (($a + $b) / 2 + $c) / 2;
+    my $C = $a + ($b - $a) / 3;
     push @s, tri($C->x, $C->y,  11, 27, 4, 11);
     push @s, tri($C->x, $C->y,   1,  4, 27, 1);
     push @s, tri($points[5][0], $points[5][1],  6, 11, 11, 4);
@@ -267,7 +267,7 @@ END
     my $c = &Math::Vectors2::new($points[22]->@*);
     my $a = &Math::Vectors2::new($points[ 2]->@*);
     my $b = &Math::Vectors2::new($points[ 3]->@*);
-    my $C = (($a + $b) / 2 + $c) / 2;
+    my $C = $a + ($b - $a) / 2;
     push @s, tri($C->x, $C->y,  15, 28, 28, 1);
     push @s, tri($C->x, $C->y,   1, 4,   4, 15);
     push @s, tri($points[5][0], $points[5][1],  6, 15, 15, 4);
@@ -290,7 +290,7 @@ END
      {my $x = ($points[4][0] +  $points[126][0]) / 2;
       my $y = ($points[4][1] +  $points[126][1]) / 2;
       push @s, tri($x, $y, 0, 8, 8, 118);
-      push @s, tri($x, $y, 118, 133);
+      push @s, tri($x, $y, 118, 133, 133, 0);
      }
    
     if (1)                                                                      # Right side of body
@@ -298,7 +298,7 @@ END
       my $y = ($points[27][1] +  $points[59][1]) / 2;
       push @s, tri($x, $y, 23, 31, 81, 23);
       push @s, tri($x, $y, 48, 81);
-      push @s, tri($x, $y, 33, 42);
+      push @s, tri($x, $y, 33, 42, 31, 48);
   
       my ($X, $Y) = @{$points[38]};                                             # Top of head
       $x = ($x + $X) / 2;
@@ -313,12 +313,12 @@ END
    }
   
   if ($file =~ m(\AcrossSection\Z))  
-   {push @s, tri($points[ 10][0], $points[ 10][1],    0,   9, 120, 121, 11, 120);
+   {push @s, tri($points[ 10][0], $points[ 10][1],    0,   9, 120, 121, 11, 120, 121, 0);
     push @s, tri($points[ 23][0], $points[ 23][1],   11,  22, 119, 120, 120, 11);
     push @s, tri($points[ 23][0], $points[ 23][1],  111, 119);
     push @s, tri($points[ 23][0], $points[ 23][1],   73, 103, 102, 111, 24, 73);
   
-    push @s, tri($points[103][0], $points[103][1],   104, 111);
+    push @s, tri($points[103][0], $points[103][1],   104, 119);
   
     push @s, tri($points[ 24][0], $points[ 24][1],    25,  39, 39, 51);
     push @s, tri($points[ 24][0], $points[ 24][1],    51,  62, 62, 73);
@@ -332,19 +332,21 @@ END
    }
   
   if ($file =~ m(\Afoot1\Z))                                                     
-   {push @s, tri($points[ 33][0], $points[ 33][1],    8, 24, 34, 8,  24, 32);
-    push @s, tri($points[ 34][0], $points[ 34][1],    0,  8);
-    push @s, tri($points[ 34][0], $points[ 34][1],   35, 36, 36, 0);    
+   {push @s, tri($points[ 31][0], $points[ 31][1],   31, 31, 30, 35); 
+    push @s, tri($points[ 32][0], $points[ 32][1],   24, 33); 
+    push @s, tri($points[ 33][0], $points[ 33][1],    8, 24, 34, 8,  24, 32);
+    push @s, tri($points[ 34][0], $points[ 34][1],    3,  13, 13, 34, 35, 3);   ####
+    push @s, tri($points[ 35][0], $points[ 35][1],    0, 3, 30, 36, 36, 0); 
+   # push @s, tri($points[ 34][0], $points[ 34][1],   35, 36, 36, 0);    
     
-    push @s, tri($points[ 32][0], $points[ 32][1],   24, 31); 
     
-    push @s, tri($points[ 30][0], $points[ 30][1],   31, 31, 31, 36);           # Covers unwanted cut  
-    push @s, tri($points[ 31][0], $points[ 31][1],   30, 30, 35, 36); 
+   # push @s, tri($points[ 30][0], $points[ 30][1],   31, 31, 31, 36);           # Covers unwanted cut  
+   # push @s, tri($points[ 31][0], $points[ 31][1],   30, 30, 35, 36); 
     swapYZ();
    }
 																				# Actually the mouth
   if ($file =~ m(\Afoot2\Z))
-   {push @s, tri($points[  1][0], $points[  1][1],    8, 30, 8, 2, 30, 0);
+   {push @s, tri($points[  1][0], $points[  1][1],    8, 30, 2, 8, 30, 0);
     push @s, tri($points[  2][0], $points[  2][1],    3, 8);
     swapYZ();
    }
@@ -367,7 +369,8 @@ END
     push @s, tri($points[  3][0], $points[  3][1],   52, 74,  74, 83,   4,  5,  5, 52);
     push @s, tri($points[ 74][0], $points[ 74][1],   75, 83);
   
-    push @s, tri($points[  6][0], $points[  6][1],   39, 52, 52, 5, 7, 39);
+    push @s, tri($points[  5][0], $points[  5][1],   51, 52);
+    push @s, tri($points[  6][0], $points[  6][1],   39, 51, 51, 5, 7, 39);
     push @s, tri($points[  7][0], $points[  7][1],    8, 13, 13, 39);
   
     push @s, tri($points[ 16][0], $points[ 16][1],   35, 39, 39, 13, 13, 14, 14, 15, 17, 35);
